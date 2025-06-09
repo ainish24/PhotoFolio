@@ -1,0 +1,26 @@
+.loader {
+  transform: translateY(50%);
+}
+.album-card:hover {
+  box-shadow:
+    0 0 4px #c84eff,
+    0 0 8px #8f00ff;
+}
+
+.album-card:hover .delete-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+.delete-btn {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  background: none;
+  border: none;
+  color: #e6399b;
+  font-size: 1.2em;
+  cursor: pointer;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
