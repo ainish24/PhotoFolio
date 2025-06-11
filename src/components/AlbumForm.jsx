@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { createNewAlbum } from "../script.js/App.js";
+import { useEffect } from "react";
 
 function AlbumForm({ newAlbum, setNewAlbum, setShowAlbumForm, setAlbums, setLoading }) {
   return (

@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/Button";
 import { MdDelete } from "react-icons/md";
 import Card from "react-bootstrap/Card";
+import { deleteAlbum } from "../script.js/App.js";
 
 const styles = {
   cardContainer: {
@@ -44,12 +45,12 @@ const styles = {
   },
 };
 
-const Album = ({ albumName, setShowAlbumForm }) => {
+const Album = ({ albumName, setShowAlbumForm, albumId, setAlbums, setLoading }) => {
   return (
     <>
-      <Card bg="dark" style={styles.cardContainer} className="album-card">
+      <Card bg="dark" style={styles.cardContainer} className="album-card" onClick={()=>console.log("Hi")}>
         <Card.Img style={styles.coverImg} variant="top" src="/AlbumCover.jpg" />
-          {albumName && (<button className="delete-btn">
+          {albumName && (<button className="delete-btn" onClick={(e)=>deleteAlbum(albumId, setAlbums, setLoading, e)}>
             <MdDelete />
           </button>)}
         <Card.Body>

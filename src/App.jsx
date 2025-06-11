@@ -12,7 +12,7 @@ function App() {
   const [albums, setAlbums] = useState([]); //To store the name of the albums
   const [loading, setLoading] = useState(true); //To show the loading spinner while fetching data
   const [showAlbumForm, setShowAlbumForm] = useState(false); //To show the form to add a new album
-  // const [shouldRenderForm, setShouldRenderForm] = useState(false); //To control the rendering of the form component so as to delay th rendering a bit and add transition effect to it
+  // const [shouldRenderForm, setShouldRenderForm] = useState(false); //To control the rendering of the form component so as to delay the rendering a bit and add transition effect to it
   const [newAlbum, setNewAlbum] = useState(""); //To store the name of the new album to be added
   useEffect(() => {
     componentMounting(setAlbums, setLoading);
@@ -21,7 +21,9 @@ function App() {
     <>
       <NavbarComponent />
       {loading && <Loader />}
-      <ToastContainer />
+      <ToastContainer 
+        limit={1}
+      />
       {showAlbumForm && (
         <AlbumForm
           newAlbum={newAlbum}
@@ -31,7 +33,7 @@ function App() {
           setLoading={setLoading}
         />
       )}
-      <AlbumsList albums={albums} setShowAlbumForm={setShowAlbumForm} />
+      <AlbumsList albums={albums} setShowAlbumForm={setShowAlbumForm} setAlbums={setAlbums} setLoading={setLoading} />
     </>
   );
 }
