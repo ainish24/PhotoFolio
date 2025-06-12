@@ -1,4 +1,3 @@
-import Button from "react-bootstrap/Button";
 import { MdDelete } from "react-icons/md";
 import Card from "react-bootstrap/Card";
 import { deleteAlbum, showPhoto } from "../script.js/App.js";
