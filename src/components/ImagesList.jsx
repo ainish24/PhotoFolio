@@ -185,7 +185,7 @@ function ImagesList({ ImagesListProps }) {
         )}
       </div>
 
-      {photoArray.length > 0 && (
+      {(photoArray.length > 0 && !isSearchActive) && (
         <Button
           className="btn btn-dark opacity-50 border-0 shadow-none btn-sm rounded-circle"
           style={{
