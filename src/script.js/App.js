@@ -1,5 +1,6 @@
 import { db } from '../config/FireBase.js';
 import { collection, getDocs, getDoc, addDoc, deleteDoc, updateDoc, doc, query, where } from "firebase/firestore";
+import { set } from 'mongoose';
 
 export const componentMounting = async (setAlbums, setLoading, ifNOtify = true) => {
     try {
@@ -70,7 +71,6 @@ export const showPhoto = async (showPhotoFunctionParams, showAlert = true) => {
             ...doc.data()
         }))
         setPhotoArray(photos);
-        console.log(photos);
         setLoading(false);
         if (photos.length !== 0) {
             setShowModal(true);
@@ -133,10 +133,39 @@ export const editPhoto = async (setImageName, setImageUrl, setCurrentImage, setE
         setCurrentImage({});
         setImageName("");
         setImageUrl("");
-        console.log("Editing photo...");
-
     } catch (error) {
         console.error("Error editing photo:", error);
+    }
+}
+
+export const searchPhoto = async (searchField, setSearchField, photoArray, setSearchResults, setIsSearchActive) => {
+    try {
+        if (searchField.trim() === "") {
+            notifyError("Search field cannot be empty!", false);
+            return;
+        }
+        const foundPhotos = photoArray.filter(photo =>
+            photo.name.toLowerCase().includes(searchField.toLowerCase()) ||
+            photo.imageURL.toLowerCase().includes(searchField.toLowerCase())
+        );
+        if (photoArray.length === 0) {
+            notifyError("Empty Album!", false);
+            return;
+        }
+        else if (foundPhotos.length === 0) {
+            notifyError("No photos found with the given search criteria!", false);
+            setSearchResults(foundPhotos);
+            setIsSearchActive(true);
+            return;
+        } else if (foundPhotos.length > 0) {
+            notifySuccess(`${foundPhotos.length} photo(s) found!`, false);
+            setSearchResults(foundPhotos);
+            setIsSearchActive(true);
+        }
+        setSearchField("");
+    } catch (error) {
+        console.error("Error searching photo:", error);
+
     }
 }
 
@@ -152,6 +181,17 @@ export const showEditPhotoForm = async (setShowImageForm, setEditMode) => {
     }
 }
 
+export const clearSearch = (setSearchField, setSearchResults, setIsSearchActive) => {
+    try {
+        setSearchField("");
+        setSearchResults([]);
+        setIsSearchActive(false);
+        notifyMessage("Search cleared!", false);
+    } catch (error) {
+        console.error("Error clearing search:", error);
+    }
+}
+
 import { toast, Slide } from 'react-toastify';
 
 export const notifyMessage = (message, toastLock = true) => {
@@ -160,7 +200,7 @@ export const notifyMessage = (message, toastLock = true) => {
     }
     toast(message, {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 1500,
         theme: "dark",
         transition: Slide,
         pauseOnHover: true,
@@ -175,7 +215,7 @@ export const notifySuccess = (message, toastLock = true) => {
     }
     toast.success(message, {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 1500,
         theme: "dark",
         transition: Slide,
         pauseOnHover: true,
@@ -190,7 +230,7 @@ export const notifyError = (message, toastLock = true) => {
     }
     toast.error(message, {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 1500,
         theme: "dark",
         transition: Slide,
         pauseOnHover: true,

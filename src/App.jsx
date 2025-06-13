@@ -24,6 +24,10 @@ function App() {
   const [imageUrl, setImageUrl] = useState(""); // To store the URL of the image to be added
   const [editMode, setEditMode] = useState(false); // To control the edit mode of the image form
   const [currentImage, setCurrentImage] = useState({}); // To store the current image being edited
+  const [searchField, setSearchField] = useState(""); // To store the search field value
+  const [searchResults, setSearchResults] = useState([]); // To store the search results
+  const [isSearchActive, setIsSearchActive] = useState(false); // To control the search state and conditionally render search results
+
   useEffect(() => {
     componentMounting(setAlbums, setLoading);
   }, []);
@@ -60,6 +64,12 @@ function App() {
     setEditMode,
     currentImage,
     setCurrentImage,
+    searchField,
+    setSearchField,
+    searchResults,
+    setSearchResults,
+    isSearchActive,
+    setIsSearchActive,
   };
 
   return (
