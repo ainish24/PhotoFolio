@@ -194,6 +194,9 @@ export const clearSearch = (setSearchField, setSearchResults, setIsSearchActive)
 
 import { toast, Slide } from 'react-toastify';
 
+//Added toast locks so as to not show multiple chained notifications at once
+
+
 export const notifyMessage = (message, toastLock = true) => {
     if (toastLock) {
         return;
