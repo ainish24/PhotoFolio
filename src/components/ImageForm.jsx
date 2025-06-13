@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { addNewPhoto } from "../script.js/App";
+import { addNewPhoto, editPhoto } from "../script.js/App";
+import { useEffect } from "react";
 
 const ImageForm = ({
   setShowImageForm,
@@ -10,7 +11,20 @@ const ImageForm = ({
   setImageUrl,
   albumData,
   showPhotoFunctionParams,
+  editMode,
+  setEditMode,
+  currentImage,
+  setCurrentImage,
 }) => {
+
+  //To prefill the form with the current image data when in edit mode
+  useEffect(()=>{
+    if(editMode && currentImage && Object.keys(currentImage).length > 0) {
+      setImageName(currentImage.name);  
+      setImageUrl(currentImage.imageURL);
+    }
+  },[editMode, currentImage]);
+
   return (
     <>
       <Form
@@ -36,6 +50,8 @@ const ImageForm = ({
             setShowImageForm(false);
             setImageName("");
             setImageUrl("");
+            setEditMode(false);
+            setCurrentImage({});
           }}
         >
           ❌
@@ -69,25 +85,28 @@ const ImageForm = ({
             onClick={() => {
               setImageName("");
               setImageUrl("");
+              setCurrentImage({});
             }}
           >
             Clear
           </Button>
           <Button
             variant="info"
+            style={{color: "white"}}
             onClick={() => {
-              addNewPhoto(
+              {editMode? (editPhoto(setImageName, setImageUrl, setCurrentImage, setEditMode, currentImage, imageName, imageUrl, showPhotoFunctionParams)
+             ) :(addNewPhoto(
                 imageName,
                 imageUrl,
                 albumData,
                 showPhotoFunctionParams
-              );
+              ))}
               setImageName("");
               setImageUrl("");
               setShowImageForm(false);
             }}
           >
-            Submit
+            { editMode? "Edit" : "Submit"}
           </Button>
         </div>
       </Form>

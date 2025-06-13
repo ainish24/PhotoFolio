@@ -22,6 +22,8 @@ function App() {
   const [showImageForm, setShowImageForm] = useState(false); // To control the visibility of the Image Form
   const [imageName, setImageName] = useState(""); // To store the name of the image to be added
   const [imageUrl, setImageUrl] = useState(""); // To store the URL of the image to be added
+  const [editMode, setEditMode] = useState(false); // To control the edit mode of the image form
+  const [currentImage, setCurrentImage] = useState({}); // To store the current image being edited
   useEffect(() => {
     componentMounting(setAlbums, setLoading);
   }, []);
@@ -54,6 +56,10 @@ function App() {
     setPhotoArray,
     setLoading,
     setAlbumData,
+    editMode,
+    setEditMode,
+    currentImage,
+    setCurrentImage,
   };
 
   return (

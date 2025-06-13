@@ -1,5 +1,6 @@
 import { db } from '../config/FireBase.js';
-import { collection, getDocs, getDoc, addDoc, deleteDoc, doc, query, where } from "firebase/firestore";
+import { collection, getDocs, getDoc, addDoc, deleteDoc, updateDoc, doc, query, where } from "firebase/firestore";
+
 export const componentMounting = async (setAlbums, setLoading, ifNOtify = true) => {
     try {
         const albumRef = collection(db, "Album")
@@ -8,7 +9,7 @@ export const componentMounting = async (setAlbums, setLoading, ifNOtify = true) 
         albumData.push("")
         setAlbums(albumData);
         if (ifNOtify)
-            notifyFetch();
+            notifyMessage("Albums fetched successfully!", false);
         setLoading(false);
     } catch (error) {
         console.error("Error mounting component:", error);
@@ -21,7 +22,7 @@ export const createNewAlbum = async (newAlbum, setAlbums, setLoading) => {
         await addDoc(albumRef, {
             name: newAlbum
         })
-        notifyCreate()
+        notifyMessage("Album Created successfully!", false)
         componentMounting(setAlbums, setLoading, false);
     } catch (error) {
         console.error("Error creating new album:", error);
@@ -34,7 +35,7 @@ export const deleteAlbum = async (albumId, setAlbums, setLoading, e) => {
     try {
         const albumRef = doc(db, "Album", albumId);
         await deleteDoc(albumRef)
-        notifyDelete()
+        notifyMessage("Album Deleted successfully!", false)
         componentMounting(setAlbums, setLoading, false);
     } catch (error) {
         console.error("Error deleting album:", error);
@@ -74,17 +75,10 @@ export const showPhoto = async (showPhotoFunctionParams, showAlert = true) => {
         if (photos.length !== 0) {
             setShowModal(true);
             if (showAlert)
-                notifyFetchPhoto(albumName)
+                notifyMessage(`${albumName}'s Photos Fetched successfully!`, false);
         } else {
-            toast.error("No photos found in this album!", {
-                position: "top-right",
-                autoClose: 3000,
-                theme: "dark",
-                transition: Slide,
-                pauseOnHover: true,
-                closeOnClick: true,
-                draggable: true,
-            });
+            if (showAlert)
+                notifyError("No photos found in this album!", false);
             setShowModal(false);
         }
         setShowImagesList(true);
@@ -104,57 +98,99 @@ export const addNewPhoto = async (imageName, imageUrl, albumData, showPhotoFunct
             albumRef: albumRef
         }
         await addDoc(photoRef, photoData);
-        notifyAddPhoto();
+        notifySuccess("Photo added successfully!", false);
         showPhoto(showPhotoFunctionParams, false); // Refresh the photos after adding a new one
     } catch (error) {
         console.error("Error adding new photos:", error);
     }
 }
 
+export const deletePhoto = async (photo, showPhotoFunctionParams) => {
+    try {
+        const photoRef = doc(db, "Photos", photo.id);
+        await deleteDoc(photoRef);
+        notifyError("Photo deleted successfully!", false);
+        showPhoto(showPhotoFunctionParams, false); // Refresh the photos after deletion
+    } catch (error) {
+        console.error("Error deleting photo:", error);
 
+    }
+}
+
+export const editPhoto = async (setImageName, setImageUrl, setCurrentImage, setEditMode, currentImage, imageName, imageUrl, showPhotoFunctionParams) => {
+    try {
+        const photoRef = doc(db, "Photos", currentImage.id);
+        const updatedData = {
+            name: imageName,
+            imageURL: imageUrl
+        }
+        await updateDoc(photoRef, updatedData);
+        showPhoto(showPhotoFunctionParams, false);
+        notifySuccess("Photo edited successfully!", false);
+
+        // Reset the form fields and states after editing
+        setEditMode(false);
+        setCurrentImage({});
+        setImageName("");
+        setImageUrl("");
+        console.log("Editing photo...");
+
+    } catch (error) {
+        console.error("Error editing photo:", error);
+    }
+}
+
+//On submitting, set the editMode to false, and also clear the data populated in the currentImage state
+
+export const showEditPhotoForm = async (setShowImageForm, setEditMode) => {
+    try {
+        setEditMode(true);
+        setShowImageForm(true);
+    } catch (error) {
+        console.error("Error editing photo:", error);
+
+    }
+}
 
 import { toast, Slide } from 'react-toastify';
-export const notifyFetch = () => toast("Albums fetched successfully!", {
-    position: "top-right",
-    autoClose: 3000,
-    theme: "dark",
-    transition: Slide,
-    pauseOnHover: true,
-    closeOnClick: true,
-    draggable: true,
-})
-export const notifyCreate = () => toast("Album Created successfully!", {
-    position: "top-right",
-    autoClose: 3000,
-    theme: "dark",
-    transition: Slide,
-    pauseOnHover: true,
-    closeOnClick: true,
-    draggable: true,
-})
-export const notifyDelete = () => toast("Album Deleted successfully!", {
-    position: "top-right",
-    autoClose: 3000,
-    theme: "dark",
-    transition: Slide,
-    pauseOnHover: true,
-    closeOnClick: true,
-    draggable: true,
-})
-export const notifyFetchPhoto = (albumName) => toast(`${albumName}'s Photos Fetched successfully!`, {
-    position: "top-right",
-    autoClose: 3000,
-    theme: "dark",
-    transition: Slide,
-    pauseOnHover: true,
-    closeOnClick: true,
-    draggable: true,
-})
 
-export const notifyAddPhoto = () => {
-    toast.success("Photo added successfully!", {
+export const notifyMessage = (message, toastLock = true) => {
+    if (toastLock) {
+        return;
+    }
+    toast(message, {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 2000,
+        theme: "dark",
+        transition: Slide,
+        pauseOnHover: true,
+        closeOnClick: true,
+        draggable: true,
+    })
+}
+
+export const notifySuccess = (message, toastLock = true) => {
+    if (toastLock) {
+        return;
+    }
+    toast.success(message, {
+        position: "top-right",
+        autoClose: 2000,
+        theme: "dark",
+        transition: Slide,
+        pauseOnHover: true,
+        closeOnClick: true,
+        draggable: true,
+    });
+}
+
+export const notifyError = (message, toastLock = true) => {
+    if (toastLock) {
+        return;
+    }
+    toast.error(message, {
+        position: "top-right",
+        autoClose: 2000,
         theme: "dark",
         transition: Slide,
         pauseOnHover: true,

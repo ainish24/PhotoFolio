@@ -46,6 +46,7 @@ function AlbumForm({ newAlbum, setNewAlbum, setShowAlbumForm, setAlbums, setLoad
         </Button>
         <Button
           variant="info"
+          style={{color: "white"}}
           onClick={() => {
             createNewAlbum(newAlbum, setAlbums, setLoading);
             // Passing setAlbums and setLoading to trigger the componentMounting function in App.js 

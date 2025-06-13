@@ -41,18 +41,22 @@ function ImagesList({ ImagesListProps }) {
     setPhotoArray,
     setLoading,
     setAlbumData,
+    editMode,
+    setEditMode,
+    currentImage,
+    setCurrentImage,
   } = ImagesListProps;
 
   //To pass the paramters to the addNewPhoto function to re-render photos after adding a new photo
-  const showPhotoFunctionParams={
+  const showPhotoFunctionParams = {
     albumId: albumData.id,
     setPhotoArray,
     setLoading,
     setShowAlbumList,
     setAlbumData,
     setShowModal,
-    setShowImagesList
-  }
+    setShowImagesList,
+  };
 
   return (
     <>
@@ -90,6 +94,10 @@ function ImagesList({ ImagesListProps }) {
           setImageUrl={setImageUrl}
           albumData={albumData}
           showPhotoFunctionParams={showPhotoFunctionParams}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          currentImage={currentImage}
+          setCurrentImage={setCurrentImage}
         />
       )}
       {showModal && (
@@ -103,11 +111,30 @@ function ImagesList({ ImagesListProps }) {
 
       <div className="d-flex flex-wrap justify-content-center align-items-center gap-3 p-3">
         {photoArray.length > 0 ? (
-          photoArray.map((photo, index) => <Image key={index} photo={photo} />)
+          photoArray.map((photo, index) => (
+            <Image
+              key={index}
+              photo={photo}
+              showPhotoFunctionParams={showPhotoFunctionParams}
+              setShowImageForm={setShowImageForm}
+              setEditMode={setEditMode}
+              setCurrentImage={setCurrentImage}
+            />
+          ))
         ) : (
           <p>No photos available in this album.</p>
         )}
       </div>
+
+      {photoArray.length > 0 && <Button
+        className="btn btn-dark opacity-50 border-0 shadow-none btn-sm rounded-circle"
+        style={{ width: "50px", height: "50px", padding: "0.2em", position: "fixed", bottom: "1em", left: "1em" }}
+        onClick={() => {
+          setShowModal(true);
+        }}
+      >
+        Modal
+      </Button>}
     </>
   );
 }
